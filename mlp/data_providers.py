@@ -190,18 +190,20 @@ class MetOfficeDataProvider(DataProvider):
         )
         # load raw data from text file
         raw_data = np.loadtxt(data_path, skiprows=3)
-        print(raw_data.shape)
+        raw_data = raw_data[:,2:]
+        #print(raw_data.shape)
         # filter out all missing datapoints and flatten to a vector
-        raw_data = raw_data[raw_data > -99.9]
-        print(raw_data.shape)
-        data = raw_data.reshape(-1)
+        raw_data = raw_data.reshape(-1)
+        data = raw_data[raw_data > -99.9]
+        #print(raw_data.shape)
+       
         data = data[:(len(data)//window_size)*window_size]
-        print(data.shape)
+        # print(data.shape)
         # normalise data to zero mean, unit standard deviation
         norm_data = (data - np.mean(data)) / np.std(data)
         # convert from flat sequence to windowed data
         windowed_data = norm_data.reshape(-1,window_size)
-        print("Windowed_data shape:{}".format(windowed_data.shape))
+        #print("Windowed_data shape:{}".format(windowed_data.shape))
         # inputs are first (window_size - 1) entries in windows
         inputs = windowed_data[:,:-1]
         # targets are last entry in windows
